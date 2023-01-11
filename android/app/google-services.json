@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "24352972945",
+    "project_id": "criander",
+    "storage_bucket": "criander.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24352972945:android:de3ca0ee24ea6004999f30",
+        "android_client_info": {
+          "package_name": "com.example.criander"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24352972945-udprt9p3tihseuibvpdcoahkf1706u5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRmkT41DzsVZWFKwS84QVYdyGYtNMuU9o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24352972945-udprt9p3tihseuibvpdcoahkf1706u5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
