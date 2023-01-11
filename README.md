@@ -1,6 +1,7 @@
 # criander
 
-A new Flutter project.
+flutterで作ったチャットアプリです
+参考(https://www.udemy.com/share/10596I3@RhyhHyjew_4y0DFMV0tOslTOIDsa2KPo3ey8lgtuCZ6syZeBPxv1f2phWbKGqXidoA==/)
 
 ## Getting Started
 
