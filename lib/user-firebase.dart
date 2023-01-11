@@ -7,6 +7,7 @@ class UserFireStore{
   static Future<String?> addUser() async{
     //実行して、
     try{
+      //newDocにnameとimage_pathも入れる
       final newDoc = await _userCollection.add({
         'name':'名無し',
         'image_path':'https://assets.st-note.com/production/uploads/images/58075596/profile_7d12166cbb91dd3ff25bbed3898bdd76.png?fit=bounds&format=jpeg&quality=85&width=330',

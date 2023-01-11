@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:criander/utils/user-firebase.dart';
+import 'package:criander/user-firebase.dart';
 
 class RoomFireStore{
   static final FirebaseFirestore _firestoreInstance=FirebaseFirestore.instance;
