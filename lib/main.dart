@@ -2,6 +2,7 @@ import 'package:criander/model/user.dart';
 import 'package:criander/pages/top-page.dart';
 import 'package:criander/room-firebase.dart';
 import 'package:criander/user-firebase.dart';
+import 'package:criander/utils/shared-prefs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -10,10 +11,14 @@ import 'package:flutter/material.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await SharedPrefs.setPrefsInstance();
   //新しいアカウントを作成
   final myUid = await UserFireStore.addUser();
   //自分のIDだったらトークルーム作成
-  if(myUid != null)RoomFireStore.addRoom(myUid);
+  if(myUid != null){
+    RoomFireStore.addRoom(myUid);
+    SharedPrefs.setUid(myUid);
+  }
   runApp(const MyApp());
 }
 
