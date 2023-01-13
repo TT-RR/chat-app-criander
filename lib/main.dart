@@ -12,13 +12,9 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await SharedPrefs.setPrefsInstance();
-  //新しいアカウントを作成
-  final myUid = await UserFireStore.addUser();
-  //自分のIDだったらトークルーム作成
-  if(myUid != null){
-    RoomFireStore.addRoom(myUid);
-    SharedPrefs.setUid(myUid);
-  }
+  //uidかnullが返される
+  String? uid = SharedPrefs.fetchUid();
+  if(uid==null) await UserFireStore.createUser();
   runApp(const MyApp());
 }
 

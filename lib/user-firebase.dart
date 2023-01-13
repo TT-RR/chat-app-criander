@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:criander/model/user.dart';
+import 'package:criander/room-firebase.dart';
+import 'package:criander/utils/shared-prefs.dart';
 
 class UserFireStore{
   static final FirebaseFirestore _firestoreInstance=FirebaseFirestore.instance;
   static final _userCollection = _firestoreInstance.collection('user');
 
-  static Future<String?> addUser() async{
+  static Future<String?> insertNewAccount() async{
     //実行して、
     try{
       //newDocにnameとimage_pathも入れる
@@ -19,9 +22,22 @@ class UserFireStore{
       print('アカウント作成失敗 --- $e');
       return null;
     }
-    }
+  }
 
-    static Future<List<QueryDocumentSnapshot>?> fetchUser() async{
+  //uidがnullの時、実行される
+  static Future<void> createUser() async{
+    //新しいアカウントを作成
+    final myUid = await UserFireStore.insertNewAccount();
+    //IDを作れたら、トークルーム作成
+    if(myUid != null){
+      await RoomFireStore.addRoom(myUid);
+      //端末に保存
+      await SharedPrefs.setUid(myUid);
+    }
+  }
+
+  //クラウドに保存してある全ての情報を取ってくる
+  static Future<List<QueryDocumentSnapshot>?> fetchUser() async{
     try{
       final snapshot = await _userCollection.get();
       //データベース/コレクション/ドキュメントの取得
@@ -30,5 +46,22 @@ class UserFireStore{
       print('ユーザ情報取得失敗 --- $e');
       return null;
     }
+  }
+
+  //クラウドに保存してある自分の情報を取ってくる
+  static Future<User?> fetchMyProfile() async{
+      try{
+        String? uid = SharedPrefs.fetchUid()!;
+        final myProfile = await _userCollection.doc(uid).get();
+        User user = User(
+          name: myProfile.data()!['name'],
+          imagePath: myProfile.data()!['image-path'],
+          uid: uid
+        );
+        return user;
+      }catch(e){
+        print('自分のユーザ情報取得失敗 --- $e');
+        return null;
+      }
   }
 }

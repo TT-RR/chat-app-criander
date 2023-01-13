@@ -12,4 +12,9 @@ class SharedPrefs{
   static Future<void> setUid(String uid) async{
     await _preferences!.setString('uid', uid);
   }
+
+  //保存されているユーザのすべてのuidが返される
+  static String? fetchUid(){
+    return _preferences!.getString('uid');
+  }
 }
