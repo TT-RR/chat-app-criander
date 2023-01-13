@@ -1,0 +1,3 @@
+class talkRoom{
+  String roomId;
+}
