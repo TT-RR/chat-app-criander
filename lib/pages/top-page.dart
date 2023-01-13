@@ -18,14 +18,14 @@ class _TopPageState extends State<TopPage> {
         uid: 'abc',
         imagePath: 'https://assets.st-note.com/production/uploads/images/58075596/profile_7d12166cbb91dd3ff25bbed3898bdd76.png?fit=bounds&format=jpeg&quality=85&width=330'
         ,
-        lastMessage: 'こんにちは'),
+        ),
     User(name: '星野',
-        uid: 'def',
-        lastMessage: 'よろしく'),
+        uid: 'def'
+        ),
     User(name: '湯澤',
         uid: 'ghi',
         imagePath: 'https://res.cloudinary.com/alu/image/upload/v1656566479/hmp_images/lq92l0ivrx6qwjyhly0b.png',
-        lastMessage: 'イェーイ'),
+        ),
   ];
 
   @override
@@ -82,7 +82,7 @@ class _TopPageState extends State<TopPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(userList[index].name,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                          Text(userList[index].lastMessage,style: TextStyle(color: Colors.grey),),
+                          Text('イエローハット',style: TextStyle(color: Colors.grey),),
                         ],
                       ),
                     ],

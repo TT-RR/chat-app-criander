@@ -48,14 +48,13 @@ class UserFireStore{
     }
   }
 
-  //クラウドに保存してある自分の情報を取ってくる
-  static Future<User?> fetchMyProfile() async{
+  //クラウドに保存してあるユーザの情報を取ってくる
+  static Future<User?> fetchProfile(String uid) async{
       try{
-        String? uid = SharedPrefs.fetchUid()!;
-        final myProfile = await _userCollection.doc(uid).get();
+        final snapshot = await _userCollection.doc(uid).get();
         User user = User(
-          name: myProfile.data()!['name'],
-          imagePath: myProfile.data()!['image-path'],
+          name: snapshot.data()!['name'],
+          imagePath: snapshot.data()!['image-path'],
           uid: uid
         );
         return user;

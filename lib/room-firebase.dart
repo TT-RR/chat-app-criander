@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:criander/model/talk-room.dart';
 import 'package:criander/user-firebase.dart';
+import 'package:criander/utils/shared-prefs.dart';
 
 class RoomFireStore{
   static final FirebaseFirestore _firestoreInstance=FirebaseFirestore.instance;
@@ -23,6 +25,16 @@ class RoomFireStore{
     }catch(e){
       print('ルーム作成失敗 ------- $e');
     }
+  }
 
+  static Future<void> fetchJoinedRooms() async{
+    try{
+      String myuid = SharedPrefs.fetchUid()!;
+      final snapshot = await _roomCollection.where('joined_user_ids',arrayContains: myuid).get();
+      List<TalkRoom> TalkRooms = [];
+
+    }catch(e){
+
+    }
   }
 }
