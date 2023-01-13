@@ -9,7 +9,7 @@ class SharedPrefs{
     }
   }
 
-  static Future<void> setUid() async{
-
+  static Future<void> setUid(String uid) async{
+    await _preferences!.setString('uid', uid);
   }
 }
