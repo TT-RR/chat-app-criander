@@ -48,6 +48,18 @@ class UserFireStore{
     }
   }
 
+  static Future <void> updateUser(User newProfile) async{
+    try{
+      await _userCollection.doc(newProfile.uid).update({
+        'name': newProfile.name,
+        'image_path': newProfile.imagePath
+      });
+    }catch(e){
+      print('ユーザ情報の更新失敗 -------- $e');
+    }
+  }
+
+
   //クラウドに保存してあるユーザの情報を取ってくる
   static Future<User?> fetchProfile(String uid) async{
       try{

@@ -1,4 +1,11 @@
+import 'dart:io';
+
+import 'package:criander/model/user.dart';
+import 'package:criander/user-firebase.dart';
+import 'package:criander/utils/shared-prefs.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -8,6 +15,30 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  File? image;
+  String imagePath = '';
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController controller = TextEditingController();
+
+  Future<void> selectImage() async{
+    //最後のところを.cameraにするとカメラが使える
+    PickedFile? pickedImage = await _picker.getImage(source: ImageSource.gallery);
+
+    if(pickedImage == null) return;
+
+    setState((){
+      //imageの中に選択した画像のpathを入れる
+      image = File(pickedImage.path);
+    });
+  }
+
+  Future<void> uploadImage() async{
+    final ref = FirebaseStorage.instance.ref('test.png');
+    final storedImage = await ref.putFile(image!);
+    imagePath = await storedImage.ref.getDownloadURL();
+    print(imagePath);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,9 +51,11 @@ class _SettingPageState extends State<SettingPage> {
           children: [
             Row(
               //名前編集欄
-              children: const [
-                SizedBox(width: 150,child: Text('名前')),
-                Expanded(child: TextField())
+              children: [
+                const SizedBox(width: 150,child: Text('名前')),
+                Expanded(child: TextField(
+                    controller: controller,
+                ))
               ],
             ),
             const SizedBox(height: 20,),
@@ -34,20 +67,38 @@ class _SettingPageState extends State<SettingPage> {
                   child: Container(
                     alignment: Alignment.center,
                     child: ElevatedButton(
-                        onPressed: (){
-
-                        }, child: const Text('画像を選択')),
+                        onPressed: ()async{
+                          await selectImage();
+                          uploadImage();
+                        },
+                        child: const Text('画像を選択')),
                   ),
                 )
               ],
+            ),
+            const SizedBox(height: 30,),
+
+            image == null   //imageの中がnullなら
+              ? const SizedBox()  //何も表示しない
+              : SizedBox(
+                width: 200,
+                height: 200,
+                child: Image.file(image!,fit: BoxFit.cover,)
             ),
             const SizedBox(height: 50,),
             SizedBox(
               height: 50,
               width: 150,
-              child: ElevatedButton(onPressed: (){
-
-                }, child: const Text('編集')),
+              child: ElevatedButton(
+                  onPressed: () async{
+                  User newProfile = User(
+                      name: controller.text,
+                      imagePath: imagePath,
+                      uid: SharedPrefs.fetchUid()!
+                  );
+                  await UserFireStore.updateUser(newProfile);
+                },
+                  child: const Text('編集')),
             )
           ],
         ),
