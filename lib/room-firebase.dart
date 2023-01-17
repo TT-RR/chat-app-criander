@@ -76,6 +76,10 @@ class RoomFireStore{
         'sender_id': SharedPrefs.fetchUid(),
         'send_time': Timestamp.now()
       });
+
+      await _roomCollection.doc(roomId).update({
+        'last_message': message
+      });
     }catch(e){
       print('メッセージの送信失敗 --------- $e');
     }

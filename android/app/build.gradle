@@ -54,7 +54,7 @@ android {
         versionName flutterVersionName
         //この行を追加することで、エラーが治る
         multiDexEnabled true
-        minSdkVersion 19
+        minSdkVersion 21
     }
 
     buildTypes {
