@@ -16,6 +16,8 @@ class TalkRoomPage extends StatefulWidget {
 }
 
 class _TalkRoomPageState extends State<TalkRoomPage> {
+  //入力欄の文字を受け取る
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +79,7 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
 
             }
           ),
+
           //送信画面
           Column(
             //入力欄を一番下に
@@ -87,13 +90,20 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                 height: 60,
                 child: Row(
                   children: [
-                    Expanded(child: TextField(
-                      decoration: InputDecoration(    //入力画面の
-                        border: OutlineInputBorder()  //アウトラインに線を引く
+                    Expanded(
+                        child: TextField(
+                          controller: controller,
+                          decoration: const InputDecoration(    //入力画面の
+                          border: OutlineInputBorder()  //アウトラインに線を引く
                       ),
                     )),
-                    IconButton(onPressed: (){
-
+                    IconButton(
+                      onPressed: () async {
+                        await RoomFireStore.sendMessage(
+                            roomId: widget.talkRoom.roomId,
+                            message: controller.text
+                        );
+                        controller.clear();
                       },
                       icon: const Icon(Icons.send),
                     )

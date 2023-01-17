@@ -64,6 +64,20 @@ class RoomFireStore{
 
   //メッセージを受け取る
   static Stream<QuerySnapshot> fetchMessageSnapshot(String roomId){
-    return _roomCollection.doc(roomId).collection('message').snapshots();
+    return _roomCollection.doc(roomId).collection('message').orderBy('send_time').snapshots();
+  }
+
+  //FireStoreに入力欄で入力した内容を格納
+  static Future<void> sendMessage({required String roomId ,required String message}) async{
+    try{
+      final messageCollection = _roomCollection.doc(roomId).collection('message');
+      await messageCollection.add({
+        'message': message,
+        'sender_id': SharedPrefs.fetchUid(),
+        'send_time': Timestamp.now()
+      });
+    }catch(e){
+      print('メッセージの送信失敗 --------- $e');
+    }
   }
 }
