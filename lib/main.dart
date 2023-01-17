@@ -15,7 +15,6 @@ void main() async{
   //uidかnullが返される
   String? uid = SharedPrefs.fetchUid();
   if(uid==null) await UserFireStore.createUser();
-  await RoomFireStore.fetchJoinedRooms();
   runApp(const MyApp());
 }
 

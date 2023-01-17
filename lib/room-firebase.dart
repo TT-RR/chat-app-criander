@@ -9,6 +9,7 @@ import 'package:criander/utils/shared-prefs.dart';
 class RoomFireStore{
   static final FirebaseFirestore _firestoreInstance=FirebaseFirestore.instance;
   static final _roomCollection = _firestoreInstance.collection('room');
+  static final joinedRoomSnapshot = _roomCollection.where('joined_user_ids',arrayContains: SharedPrefs.fetchUid()).snapshots();
 
   //自分のIDと一致したときだけ、トークルーム作成
   static Future<void> addRoom(String myUid) async{
@@ -28,15 +29,14 @@ class RoomFireStore{
     }
   }
 
-  static Future<void> fetchJoinedRooms() async{
+  static Future<List<TalkRoom>?> fetchJoinedRooms(QuerySnapshot snapshot) async{
     try{
       String myuid = SharedPrefs.fetchUid()!;
-      //データベースのルームの情報を取ってくる
-      final snapshot = await _roomCollection.where('joined_user_ids',arrayContains: myuid).get();
       List<TalkRoom> TalkRooms = [];
       //ルームの数だけ繰り返す
       for(var doc in snapshot.docs){
-        List<dynamic>  userIds = doc.data()['joined_user_ids'];
+        Map<String,dynamic> data = doc.data() as Map<String,dynamic>;
+        List<dynamic>  userIds = data['joined_user_ids'];
         late String talkUsrUid;
         //ルームの中に入っているIDの数だけ繰り返す(2回)
         for(var id in userIds){
@@ -44,18 +44,21 @@ class RoomFireStore{
           talkUsrUid =id;
         }
         User? talkUser = await UserFireStore.fetchProfile(talkUsrUid);
-        if(talkUser==null) return;
+        if(talkUser==null) return null;
         final talkRoom = TalkRoom(
             roomId: doc.id,
             talkUser: talkUser,
-            lastMessage: doc.data()['last_message']
+            lastMessage: data
+            ['last_message']
         );
         TalkRooms.add(talkRoom);
       }
 
       print(TalkRooms.length);
+      return TalkRooms;
     }catch(e){
-      print('参加しているルームの取得失敗 ------- $e');
+      print('参加しているルームの取得に失敗しました ------- $e');
+      return null;
     }
   }
 }
