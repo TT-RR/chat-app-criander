@@ -40,16 +40,22 @@ class RoomFireStore{
         late String talkUsrUid;
         //ルームの中に入っているIDの数だけ繰り返す(2回)
         for(var id in userIds){
-          if(id==myuid) return;
+          if(id==myuid) continue;
           talkUsrUid =id;
         }
         User? talkUser = await UserFireStore.fetchProfile(talkUsrUid);
         if(talkUser==null) return;
-        final talkRoom = TalkRoom(roomId: doc.id, talkUser: talkUser);
+        final talkRoom = TalkRoom(
+            roomId: doc.id,
+            talkUser: talkUser,
+            lastMessage: doc.data()['last_message']
+        );
+        TalkRooms.add(talkRoom);
       }
 
+      print(TalkRooms.length);
     }catch(e){
-
+      print('参加しているルームの取得失敗 ------- $e');
     }
   }
 }
