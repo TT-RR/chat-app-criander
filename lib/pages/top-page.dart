@@ -16,20 +16,6 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> {
-  List<User> userList = [
-    User(name: '田中',
-        uid: 'abc',
-        imagePath: 'https://assets.st-note.com/production/uploads/images/58075596/profile_7d12166cbb91dd3ff25bbed3898bdd76.png?fit=bounds&format=jpeg&quality=85&width=330'
-        ,
-        ),
-    User(name: '星野',
-        uid: 'def'
-        ),
-    User(name: '湯澤',
-        uid: 'ghi',
-        imagePath: 'https://res.cloudinary.com/alu/image/upload/v1656566479/hmp_images/lq92l0ivrx6qwjyhly0b.png',
-        ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -57,62 +43,67 @@ class _TopPageState extends State<TopPage> {
           if(streamsnapshot.hasData){
             return FutureBuilder<List<TalkRoom>?>(
                 future: RoomFireStore.fetchJoinedRooms(streamsnapshot.data!),
-                builder: (context ,futuresnapshot) {
-                  if(futuresnapshot.hasData){
-                    List<TalkRoom> talkRooms = futuresnapshot.data!;
-                    return ListView.builder(
-
-                      //userList内の要素数だけトークン数を作成
-                        itemCount: talkRooms.length,
-                        itemBuilder: (context, index) {
-                          //ウィジェットにカーソルをあわせ、電球をクリックすることで、スタイル設定できる
-                          return InkWell(
-                            //タップすると、
-                            onTap: (){
-                              //class トークぺージルームに遷移
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context)  => TalkRoomPage(userList[index].name)
-                              ));
-                            },
-                            child: SizedBox(
-                              height: 80,
-                              child: Row(
-                                children: [
-                                  //アカウント画像
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: talkRooms[index].talkUser.imagePath ==  null
-                                            ? null    //nullなら何も表示しない
-                                            : NetworkImage(talkRooms[index].talkUser.imagePath!)    //nullじゃないならurlの画像表示
-                                    ),
-                                  ),
-
-                                  //Columnウィジェットは要素を縦に並べる
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(talkRooms[index].talkUser.name,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
-                                      Text(talkRooms[index].lastMessage ?? '',style: TextStyle(color: Colors.grey),),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                    );
+                builder: (context ,futureSnapshot) {
+                  if(futureSnapshot.connectionState == ConnectionState.waiting){
+                    return const Center(child: CircularProgressIndicator());
                   }
                   else{
-                    return const Text('トークルームの取得に失敗しました');
+                    if(futureSnapshot.hasData){
+                      List<TalkRoom> talkRooms = futureSnapshot.data!;
+                      return ListView.builder(
+                        //userList内の要素数だけトークン数を作成
+                          itemCount: talkRooms.length,
+                          itemBuilder: (context, index) {
+                            //ウィジェットにカーソルをあわせ、電球をクリックすることで、スタイル設定できる
+                            return InkWell(
+                              //タップすると、
+                              onTap: (){
+                                //class トークぺージルームに遷移
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context)  => TalkRoomPage(talkRooms[index])
+                                ));
+                              },
+                              child: SizedBox(
+                                height: 80,
+                                child: Row(
+                                  children: [
+                                    //アカウント画像
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: talkRooms[index].talkUser.imagePath ==  null
+                                              ? null    //nullなら何も表示しない
+                                              : NetworkImage(talkRooms[index].talkUser.imagePath!)    //nullじゃないならurlの画像表示
+                                      ),
+                                    ),
+
+                                    //Columnウィジェットは要素を縦に並べる
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(talkRooms[index].talkUser.name,style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                        Text(talkRooms[index].lastMessage ?? '',style: TextStyle(color: Colors.grey),),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                      );
+                    }
+                    else{
+                      return const Center(child: Text('トークルームの取得に失敗しました'));
+                    }
                   }
+
                 }
             );
           }
          else{
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
         }
       ),

@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message{
   String message;   //どんなメッセージ
   bool isMe;        //trueなら自分のメッセージ
                     //flaseなら相手のメッセージ
-  DateTime sendTime;//日付
+  Timestamp sendTime;//日付
 
   Message({
     required this.message,
