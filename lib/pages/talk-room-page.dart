@@ -60,7 +60,7 @@ class _TalkRoomPageState extends State<TalkRoomPage> {
                                   constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.6),
                                   decoration: BoxDecoration(
                                       color: message.isMe  ? Colors.green : Colors.white,
-                                      borderRadius: BorderRadius.circular(15)
+                                      borderRadius: BorderRadius.circular(20)
                                   ),
                                   padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 6),
                                   child: Text(message.message)
